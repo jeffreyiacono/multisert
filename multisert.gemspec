@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["jeff.iacono@gmail.com"]
   gem.description   = %q{Buffer to handle bulk INSERTs}
   gem.summary       = %q{Buffer to handle bulk INSERTs}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/jeffreyiacono/multisert"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
