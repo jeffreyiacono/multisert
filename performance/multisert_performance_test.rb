@@ -13,10 +13,10 @@ end
 def generate_records records_count = NUM_OF_OPERATIONS
   puts_with_time "generating #{records_count} random entries"
   sample_records = (0...records_count).reduce([]) do |memo, i|
-    memo << {'test_field_1' => i,
-             'test_field_2' => i + 1,
-             'test_field_3' => i + 2,
-             'test_field_4' => i + 3}
+    memo << {'field_1' => i,
+             'field_2' => i + 1,
+             'field_3' => i + 2,
+             'field_4' => i + 3}
     memo
   end
   puts_with_time "generated #{records_count} random entries"
@@ -69,10 +69,10 @@ end
 cleaner = MrClean.new(database: PERFORMANCE_DATABASE, connection: CONNECTION)
 cleaner.create_table_schemas << %[
   CREATE TABLE IF NOT EXISTS #{PERFORMANCE_DATABASE}.#{PERFORMANCE_TABLE} (
-      test_field_1 int default null
-    , test_field_2 int default null
-    , test_field_3 int default null
-    , test_field_4 int default null
+      field_1 int default null
+    , field_2 int default null
+    , field_3 int default null
+    , field_4 int default null
   )]
 
 sample_records = generate_records
