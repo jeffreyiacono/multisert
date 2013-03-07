@@ -1,6 +1,6 @@
 # Multisert
 
-TODO: Write a gem description
+buffer that handles bundling up INSERTs to increase runtime.
 
 ## Installation
 
