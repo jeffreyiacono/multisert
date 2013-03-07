@@ -1,3 +1,3 @@
 class Multisert
-  VERSION = "0.0.0.alpha"
+  VERSION = "0.0.1"
 end
