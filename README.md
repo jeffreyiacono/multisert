@@ -81,7 +81,7 @@ We ran the performance test (with some modification to iterate the test 5
 times) and receive the following output:
 
 ```bash
-$ ruby performance/multisert_performance_test.rb
+$ ruby ./performance/multisert_performance_test.rb
 # test 1:
 #   insert w/o buffer took 53.37s to insert 100000 entries
 #   multisert w/ buffer of 10000 took 1.77s to insert 100000 entries
