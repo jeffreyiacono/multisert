@@ -102,6 +102,8 @@ multisert ⚡ ruby performance/multisert_performance_test.rb
 #   multisert w/ buffer of 10000 took 1.78s to insert 100000 entries
 ```
 
+As we can see, ~30x performance increase.
+
 The performance test was run on a computer with the following specs:
 
     Model Name:             MacBook Air
