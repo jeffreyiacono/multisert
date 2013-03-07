@@ -70,6 +70,50 @@ script. This ensures that any pending entries are written to the database table
 that were not automatically taken care of by the auto-flush that will kick in
 during the iteration.
 
+## Performance
+
+The gem has a quick performance test built in that can be run via:
+```bash
+$ ruby ./performance/multisert_performance_test
+```
+We ran the performance test (with some modification to iterate the test 5
+times) and receive the following output:
+
+```bash
+multisert ⚡ ruby performance/multisert_performance_test.rb
+# test 1:
+#   insert w/o buffer took 53.37s to insert 100000 entries
+#   multisert w/ buffer of 10000 took 1.77s to insert 100000 entries
+#
+# test 2:
+#   insert w/o buffer took 53.22s to insert 100000 entries
+#   multisert w/ buffer of 10000 took 1.84s to insert 100000 entries
+#
+# test 3:
+#   insert w/o buffer took 54.42s to insert 100000 entries
+#   multisert w/ buffer of 10000 took 1.9s to insert 100000 entries
+#
+# test 4:
+#   insert w/o buffer took 53.38s to insert 100000 entries
+#   multisert w/ buffer of 10000 took 1.81s to insert 100000 entries
+#
+# test 5:
+#   insert w/o buffer took 53.52s to insert 100000 entries
+#   multisert w/ buffer of 10000 took 1.78s to insert 100000 entries
+```
+
+The performance test was run on a computer with the following specs:
+
+    Model Name:             MacBook Air
+    Model Identifier:       MacBookAir4,2
+    Processor Name:         Intel Core i5
+    Processor Speed:        1.7 GHz
+    Number of Processors:   1
+    Total Number of Cores:  2
+    L2 Cache (per Core):    256 KB
+    L3 Cache:               3 MB
+    Memory:                 4 GB
+
 ## FAQ
 
 ### Packet Too Large / Connection Lost Errors
