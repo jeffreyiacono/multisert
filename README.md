@@ -1,6 +1,7 @@
 # Multisert
 
-buffer that handles bundling up INSERTs to increase runtime.
+Multisert is a buffer that handles bundling up INSERTs, which increases runtime
+performance.
 
 ## Installation
 
