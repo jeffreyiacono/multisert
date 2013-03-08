@@ -5,21 +5,23 @@ performance.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+To install, this line to should be added to the application's Gemfile:
 
     gem 'multisert'
 
-And then execute:
+And then the following should be executed:
 
     $ bundle
 
-Or install it yourself as:
+Alternatively, this can be installed by executing:
 
     $ gem install multisert
 
 ## Usage
 
-Let's start with a table:
+As an example:
+
+There is a table, defined below, into which records will be inserted:
 
 ```sql
 CREATE TABLE IF NOT EXISTS some_database.some_table (
@@ -30,9 +32,9 @@ CREATE TABLE IF NOT EXISTS some_database.some_table (
 );
 ```
 
-Now let's say we want to insert 1,000,000 records after running the
-current iterator through `some_magical_calculation` into our table from above.
-Let's assume that `some_magical_calculation` takes a single integer input and
+The goal is to insert 1,000,000 records after running the
+current iterator through `some_magical_calculation` into the table above.
+The `some_magical_calculation` takes a single integer input and
 returns an array of 4 values.
 
 ```ruby
@@ -44,8 +46,7 @@ returns an array of 4 values.
 end
 ```
 
-This works, but we can improve it's speed by bundling up inserts using
-`Multisert`:
+While this works, it can optimized for faster query performance by bundling the inserts using `Multisert`:
 
 ```ruby
 buffer = Multisert.new connection: dbclient,
@@ -60,25 +61,16 @@ end
 buffer.flush!
 ```
 
-We start by creating a new Multisert instance, providing the database
-connection, database and table, and fields as attributes. Next, as we get the
-results from `some_magical_calculation`, we shovel each into the Multisert
-instance. As we iterate through, the Multisert instance will build up the
-records and then flush itself to the specified database table when it hits an
-internal count (default is 10_000, but can be set via the `max_buffer_count`
-attribute). One last thing to note is the `buffer.flush!` at the end of the
-script. This ensures that any pending entries are written to the database table
-that were not automatically taken care of by the auto-flush that will kick in
-during the iteration.
+To create a new Multisert instance one must provide the database connection, database and table, and fields as attributes. As values are returned from `some_magical_calculation`, they are shoveled into the Multisert instance. As the process iterates, the Multisert instance will build up the records and then flush itself to the specified database table when it hits an internal count. (Note: the default count is 10_000, but the value can be changed by setting the `max_buffer_count` attribute). The last item of note is the `buffer.flush!` at the end of the script. This ensures that any pending entries that escaped the auto-flush during the iteration will be written to the database table.
 
 ## Performance
 
-The gem has a quick performance test built in that can be run via:
+The gem has a quick, built-in performance test that can be run via:
 ```bash
 $ ruby ./performance/multisert_performance_test
 ```
-We ran the performance test (with some modification to iterate the test 5
-times) and receive the following output:
+The following reflects the output a recent performance test (with some modification to iterate the test 5
+times)::
 
 ```bash
 $ ruby ./performance/multisert_performance_test
@@ -103,7 +95,7 @@ $ ruby ./performance/multisert_performance_test
 #   multisert w/ buffer of 10000 took 1.78s to insert 100000 entries
 ```
 
-As we can see, ~30x performance increase.
+As evident in the test results above, a ~30x performance increase was observed!
 
 The performance test was run on a computer with the following specs:
 
@@ -121,22 +113,20 @@ The performance test was run on a computer with the following specs:
 
 ### Packet Too Large / Connection Lost Errors
 
-You may run into the "Packet Too Large" error when attempting to run a
-multisert. This can comeback as this error explicitly or as a "Connection
-Lost" error, depending on your mysql client.
+It's possible that one will encounter the "Packet Too Large" error when attempting to run a multisert. This can be flagged by this error explicitly or as a "Connection Lost" error, depending on your MySql client.
 
 To learn more, [read the documentation](http://dev.mysql.com/doc/refman/5.5/en//packet-too-large.html).
 
-If you need to you can adjust the buffer size by setting `max_buffer_count`
+To adjust the buffer size, set the `max_buffer_count`
 attribute. Generally, 10,000 to 100,000 is a pretty good starting range.
 
 ## Contributing
 
 1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
+2. Create a feature branch (`git checkout -b my-new-feature`)
+3. Commit the changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+5. Create a new Pull Request
 
 ## License
 
