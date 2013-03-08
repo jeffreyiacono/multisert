@@ -9,7 +9,7 @@ TEST_TABLE    = 'test_data'
 # TODO: make into yaml config
 $connection = Mysql2::Client.new(host: 'localhost', username: 'root')
 
-$cleaner = MrClean.new(database: TEST_DATABASE, connection: $connection) do |mgr|
+$cleaner = MultisertSpec::MrClean.new(database: TEST_DATABASE, connection: $connection) do |mgr|
   mgr.create_table_schemas << %[
     CREATE TABLE IF NOT EXISTS #{mgr.database}.#{TEST_TABLE} (
       test_field_int_1 int default null,
