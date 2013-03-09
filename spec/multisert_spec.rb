@@ -17,7 +17,8 @@ $cleaner = MultisertSpec::MrClean.new(database: TEST_DATABASE, connection: $conn
       test_field_int_3 int default null,
       test_field_int_4 int default null,
       test_field_varchar varchar(10) default null,
-      test_field_date DATE default null
+      test_field_date DATE default null,
+      test_field_datetime DATETIME default null
     )]
 end
 
@@ -144,6 +145,33 @@ describe Multisert do
         {'test_field_date' => Date.parse('2013-01-16')},
         {'test_field_date' => Date.parse('2013-01-17')},
         {'test_field_date' => Date.parse('2013-01-18')}]
+
+      buffer.entries.should == []
+    end
+
+    it "works with times" do
+      pre_flush_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
+      pre_flush_records.to_a.should == []
+
+      buffer.connection = connection
+      buffer.database   = TEST_DATABASE
+      buffer.table      = TEST_TABLE
+      buffer.fields     = ['test_field_datetime']
+
+      buffer << [Time.new(2013, 1, 15, 1, 5, 11)]
+      buffer << [Time.new(2013, 1, 16, 2, 6, 22)]
+      buffer << [Time.new(2013, 1, 17, 3, 7, 33)]
+      buffer << [Time.new(2013, 1, 18, 4, 8, 44)]
+
+      buffer.flush!
+
+      post_flush_records = connection.query %[SELECT test_field_datetime FROM #{TEST_DATABASE}.#{TEST_TABLE}]
+
+      post_flush_records.to_a.should == [
+        {'test_field_datetime' => Time.new(2013, 1, 15, 1, 5, 11)},
+        {'test_field_datetime' => Time.new(2013, 1, 16, 2, 6, 22)},
+        {'test_field_datetime' => Time.new(2013, 1, 17, 3, 7, 33)},
+        {'test_field_datetime' => Time.new(2013, 1, 18, 4, 8, 44)}]
 
       buffer.entries.should == []
     end

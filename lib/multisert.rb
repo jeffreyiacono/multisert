@@ -68,13 +68,11 @@ private
 
   def cast value
     case value
-    when String
-      # TODO: want to escape the string too, checking for " and ;
-      "'#{value}'"
-    when Date
-      "'#{value}'"
-    else
-      value
+    # TODO: want to escape the string too, checking for " and ;
+    when String then "'#{value}'"
+    when Date   then "'#{value.strftime("%Y-%m-%d")}'"
+    when Time   then "'#{value.strftime("%Y-%m-%d %H:%M:%S")}'"
+    else value
     end
   end
 end

@@ -130,6 +130,20 @@ To learn more, [read the documentation](http://dev.mysql.com/doc/refman/5.5/en//
 If you need to you can adjust the buffer size by setting `max_buffer_count`
 attribute. Generally, 10,000 to 100,000 is a pretty good starting range.
 
+### Does it work with Dates?
+
+Yes, just pass in a Date instance and it will be converted to a mysql
+friendly format under the hood ("%Y-%m-%d"). If you need a special format,
+convert the date to a string that is in the form you want before passing it into
+Multisert.
+
+### Does it work with Times?
+
+Yes, just pass in a Time instance and it will be converted to a mysql
+friendly format under the hood ("%Y-%m-%d %H:%M:%S"). If you need a special
+format, convert the time to a string that is in the form you want before passing
+it into Multisert.
+
 ## Contributing
 
 1. Fork it
