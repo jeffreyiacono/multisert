@@ -119,6 +119,8 @@ The performance test was run on a computer with the following specs:
     L3 Cache:               3 MB
     Memory:                 4 GB
 
+All data was written to a mysql instance on localhost.
+
 ### Buffer Sizes
 
 Let's take a look at how buffer size comes into play.
