@@ -73,6 +73,8 @@ during the iteration.
 
 ## Performance
 
+### Individual vs Buffer
+
 The gem has a quick performance test built in that can be run via:
 ```bash
 $ ruby ./performance/multisert_performance_test
@@ -116,6 +118,33 @@ The performance test was run on a computer with the following specs:
     L2 Cache (per Core):    256 KB
     L3 Cache:               3 MB
     Memory:                 4 GB
+
+### Buffer Sizes
+
+Let's take a look at how buffer size comes into play.
+
+We ran 3 separate and independent tests on the same computer as above.
+Additionally, also note that a buffer size of 0 and 1 are basically identical.
+
+If we look at using a buffer size ranging from 0 - 10, we see the following
+performance:
+
+<img src="https://raw.github.com/jeffreyiacono/images/master/multisert/multisert-performance-test-0-10.png" width="900" alt="Buffer size: 0 - 10" />
+
+If we take a step back and look at buffer sizes ranging from 0 - 100, we see the
+following performance:
+
+<img src="https://raw.github.com/jeffreyiacono/images/master/multisert/multisert-performance-test-0-100.png" width="900" alt="Buffer size: 0 - 100" />
+
+Finally, if we look at buffer sizes ranging from 0 - 1,000 and 0 - 10,000 we see
+the following performance (soiler alert: not much difference, just more points!):
+
+<img src="https://raw.github.com/jeffreyiacono/images/master/multisert/multisert-performance-test-0-1000.png" width="900" alt="Buffer size: 0 - 100" />
+
+<img src="https://raw.github.com/jeffreyiacono/images/master/multisert/multisert-performance-test-0-10000.png" width="900" alt="Buffer size: 0 - 100" />
+
+As can be seen, we see vastly improved performance as we increment our buffer
+from 0 - 100, but then level off thereafter.
 
 ## FAQ
 
