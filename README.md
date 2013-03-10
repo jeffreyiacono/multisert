@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS some_database.some_table (
   field_2 int default null,
   field_3 int default null,
   field_4 int default null
-);
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 ```
 
 Now let's say we want to insert 1,000,000 records after running the
