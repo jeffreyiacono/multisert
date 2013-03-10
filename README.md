@@ -137,7 +137,8 @@ following performance:
 <img src="https://raw.github.com/jeffreyiacono/images/master/multisert/multisert-performance-test-0-100.png" width="900" alt="Buffer size: 0 - 100" />
 
 Finally, if we look at buffer sizes ranging from 0 - 1,000 and 0 - 10,000 we see
-the following performance (soiler alert: not much difference, just more points!):
+the following performance (spoiler alert: not much difference, just more data
+points!):
 
 <img src="https://raw.github.com/jeffreyiacono/images/master/multisert/multisert-performance-test-0-1000.png" width="900" alt="Buffer size: 0 - 100" />
 
