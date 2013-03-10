@@ -79,5 +79,14 @@ sample_records = generate_records
 
 puts_with_time "starting performance test: using #{sample_records.count} random entries, writing to #{PERFORMANCE_DESTINATION}"
 
+# individual insert vs multisert
 insert_performance_test     CONNECTION, cleaner, sample_records, PERFORMANCE_DESTINATION
-multinsert_performance_test CONNECTION, cleaner, sample_records, PERFORMANCE_DESTINATION,  10_000
+multinsert_performance_test CONNECTION, cleaner, sample_records, PERFORMANCE_DESTINATION, 10_000
+
+mini_steps = (0..9)
+big_steps  = (10..10_000).step(10)
+
+# buffer size performance test
+[*mini_steps, *big_steps].each do |i|
+  multinsert_performance_test CONNECTION, cleaner, sample_records, PERFORMANCE_DESTINATION, i
+end
