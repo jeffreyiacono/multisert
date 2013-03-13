@@ -28,18 +28,18 @@ describe Multisert do
 
     it "addes to the entries" do
       buffer << [1, 2, 3]
-      buffer.entries.should == [[1, 2, 3]]
+      expect(buffer.entries).to eq [[1, 2, 3]]
     end
 
     it "calls #flush! when the number of entries equals (or exceeds) max buffer count" do
       buffer.max_buffer_count = 2
-      buffer.should_receive(:flush!)
+      buffer.should_receive(:write_buffer!)
       buffer << [1, 2, 3]
       buffer << [1, 2, 3]
     end
   end
 
-  describe "#flush!" do
+  describe "#write_buffer!" do
     let(:connection) { $connection }
     let(:buffer) { described_class.new }
 
@@ -48,19 +48,19 @@ describe Multisert do
     end
 
     it "does not fall over when there are no entries" do
-      flush_records = connection.query "DELETE FROM #{TEST_DATABASE}.#{TEST_TABLE}"
-      flush_records.to_a.should == []
+      write_buffer_records = connection.query "DELETE FROM #{TEST_DATABASE}.#{TEST_TABLE}"
+      expect(write_buffer_records.to_a).to eq []
 
-      buffer.flush!
+      buffer.write_buffer!
 
-      flush_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
-      flush_records.to_a.should == []
-      buffer.entries.should == []
+      write_buffer_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
+      expect(write_buffer_records.to_a).to eq []
+      expect(buffer.entries).to eq []
     end
 
     it "multi-inserts all added entries" do
-      pre_flush_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
-      pre_flush_records.to_a.should == []
+      pre_write_buffer_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
+      expect(pre_write_buffer_records.to_a).to eq []
 
       buffer.connection = connection
       buffer.database   = TEST_DATABASE
@@ -75,9 +75,9 @@ describe Multisert do
       buffer << [10, 11, 12, 13]
       buffer << [14, 15, 16, 17]
 
-      buffer.flush!
+      buffer.write_buffer!
 
-      post_flush_records = connection.query %[
+      post_write_buffer_records = connection.query %[
         SELECT
             test_field_int_1
           , test_field_int_2
@@ -85,18 +85,19 @@ describe Multisert do
           , test_field_int_4
         FROM #{TEST_DATABASE}.#{TEST_TABLE}]
 
-      post_flush_records.to_a.should == [
+      expect(post_write_buffer_records.to_a).to eq [
         {'test_field_int_1' => 1,  'test_field_int_2' => 3,  'test_field_int_3' => 4,  'test_field_int_4' => 5},
         {'test_field_int_1' => 6,  'test_field_int_2' => 7,  'test_field_int_3' => 8,  'test_field_int_4' => 9},
         {'test_field_int_1' => 10, 'test_field_int_2' => 11, 'test_field_int_3' => 12, 'test_field_int_4' => 13},
-        {'test_field_int_1' => 14, 'test_field_int_2' => 15, 'test_field_int_3' => 16, 'test_field_int_4' => 17}]
+        {'test_field_int_1' => 14, 'test_field_int_2' => 15, 'test_field_int_3' => 16, 'test_field_int_4' => 17}
+      ]
 
-      buffer.entries.should == []
+      expect(buffer.entries).to eq []
     end
 
     it "works with strings" do
-      pre_flush_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
-      pre_flush_records.to_a.should == []
+      pre_write_buffer_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
+      expect(pre_write_buffer_records.to_a).to eq []
 
       buffer.connection = connection
       buffer.database   = TEST_DATABASE
@@ -108,23 +109,24 @@ describe Multisert do
       buffer << ['c']
       buffer << ['d']
 
-      buffer.flush!
+      buffer.write_buffer!
 
-      post_flush_records = connection.query %[SELECT test_field_varchar FROM #{TEST_DATABASE}.#{TEST_TABLE}]
-      post_flush_records.to_a.should == [
+      post_write_buffer_records = connection.query %[SELECT test_field_varchar FROM #{TEST_DATABASE}.#{TEST_TABLE}]
+      expect(post_write_buffer_records.to_a).to eq [
         {'test_field_varchar' => 'a'},
         {'test_field_varchar' => 'b'},
         {'test_field_varchar' => 'c'},
-        {'test_field_varchar' => 'd'}]
+        {'test_field_varchar' => 'd'}
+      ]
 
-      buffer.entries.should == []
+      expect(buffer.entries).to eq []
     end
 
     it "works with strings that have illegal characters"
 
     it "works with dates" do
-      pre_flush_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
-      pre_flush_records.to_a.should == []
+      pre_write_buffer_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
+      expect(pre_write_buffer_records.to_a).to eq []
 
       buffer.connection = connection
       buffer.database   = TEST_DATABASE
@@ -136,22 +138,23 @@ describe Multisert do
       buffer << [Date.new(2013, 1, 17)]
       buffer << [Date.new(2013, 1, 18)]
 
-      buffer.flush!
+      buffer.write_buffer!
 
-      post_flush_records = connection.query %[SELECT test_field_date FROM #{TEST_DATABASE}.#{TEST_TABLE}]
+      post_write_buffer_records = connection.query %[SELECT test_field_date FROM #{TEST_DATABASE}.#{TEST_TABLE}]
 
-      post_flush_records.to_a.should == [
+      expect(post_write_buffer_records.to_a).to eq [
         {'test_field_date' => Date.parse('2013-01-15')},
         {'test_field_date' => Date.parse('2013-01-16')},
         {'test_field_date' => Date.parse('2013-01-17')},
-        {'test_field_date' => Date.parse('2013-01-18')}]
+        {'test_field_date' => Date.parse('2013-01-18')}
+      ]
 
-      buffer.entries.should == []
+      expect(buffer.entries).to eq []
     end
 
     it "works with times" do
-      pre_flush_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
-      pre_flush_records.to_a.should == []
+      pre_write_buffer_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
+      expect(pre_write_buffer_records.to_a).to eq []
 
       buffer.connection = connection
       buffer.database   = TEST_DATABASE
@@ -163,17 +166,33 @@ describe Multisert do
       buffer << [Time.new(2013, 1, 17, 3, 7, 33)]
       buffer << [Time.new(2013, 1, 18, 4, 8, 44)]
 
-      buffer.flush!
+      buffer.write_buffer!
 
-      post_flush_records = connection.query %[SELECT test_field_datetime FROM #{TEST_DATABASE}.#{TEST_TABLE}]
+      post_write_buffer_records = connection.query %[SELECT test_field_datetime FROM #{TEST_DATABASE}.#{TEST_TABLE}]
 
-      post_flush_records.to_a.should == [
+      expect(post_write_buffer_records.to_a).to eq [
         {'test_field_datetime' => Time.new(2013, 1, 15, 1, 5, 11)},
         {'test_field_datetime' => Time.new(2013, 1, 16, 2, 6, 22)},
         {'test_field_datetime' => Time.new(2013, 1, 17, 3, 7, 33)},
         {'test_field_datetime' => Time.new(2013, 1, 18, 4, 8, 44)}]
 
-      buffer.entries.should == []
+      expect(buffer.entries).to eq []
+    end
+  end
+
+  describe "#flush!" do
+    it "aliases #write_buffer!" do
+      instance = described_class.new
+      flush_method = instance.method(:flush!)
+      expect(flush_method).to eq instance.method(:write_buffer!)
+    end
+  end
+
+  describe "#write!" do
+    it "aliases #write_buffer!" do
+      instance = described_class.new
+      flush_method = instance.method(:write!)
+      expect(flush_method).to eq instance.method(:write_buffer!)
     end
   end
 end

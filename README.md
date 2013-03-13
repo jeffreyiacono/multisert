@@ -57,18 +57,18 @@ buffer = Multisert.new connection: dbclient,
   res = some_magical_calculation(i)
   buffer << res
 end
-buffer.flush!
+buffer.write!
 ```
 
 We start by creating a new Multisert instance, providing the database
 connection, database and table, and fields as attributes. Next, as we get the
 results from `some_magical_calculation`, we shovel each into the Multisert
 instance. As we iterate through, the Multisert instance will build up the
-records and then flush itself to the specified database table when it hits an
+records and then write itself to the specified database table when it hits an
 internal count (default is 10_000, but can be set via the `max_buffer_count`
-attribute). One last thing to note is the `buffer.flush!` at the end of the
+attribute). One last thing to note is the `buffer.write!` at the end of the
 script. This ensures that any pending entries are written to the database table
-that were not automatically taken care of by the auto-flush that will kick in
+that were not automatically taken care of by the auto-write that will kick in
 during the iteration.
 
 ## Performance
