@@ -218,6 +218,7 @@ describe Multisert do
         buffer.insert_strategy = :replace
 
         buffer << [1, 'SOMETHING NEW']
+        buffer << [3, 'ALSO NEW']
 
         buffer.write_buffer!
 
@@ -229,7 +230,8 @@ describe Multisert do
 
         expect(post_write_buffer_records.to_a).to eq [
           {'test_id' => 1, 'test_field' => 'SOMETHING NEW'},
-          {'test_id' => 2, 'test_field' => 'TWO'}]
+          {'test_id' => 2, 'test_field' => 'TWO'},
+          {'test_id' => 3, 'test_field' => 'ALSO NEW'}]
       end
     end
 
