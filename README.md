@@ -71,6 +71,22 @@ script. This ensures that any pending entries are written to the database table
 that were not automatically taken care of by the auto-write that will kick in
 during the iteration.
 
+## Insert Strategies
+
+Multisert defaults to using `INSERT INTO` on `#write!`, but you can set the
+insert strategy to `REPLACE INTO` or `INSERT IGNORE`:
+
+```ruby
+buffer = Multisert.new
+#=> would use INSERT INTO on #write! by default
+
+buffer.insert_strategy = :replace
+#=> would now use REPLACE INTO on #write!
+
+buffer.insert_strategy = :ignore
+#=> would now use INSERT IGNORE on #write!
+```
+
 ## Performance
 
 ### Individual vs Buffer
