@@ -3,8 +3,8 @@ require './spec/spec_helper'
 require './lib/multisert'
 
 # TODO: allow overriding in yaml config
-TEST_DATABASE = 'multisert_test'
-TEST_TABLE    = 'test_data'
+TEST_DATABASE      = 'multisert_test'
+TEST_TABLE         = 'test_data'
 TEST_INDEXED_TABLE = 'test_indexed_data'
 
 # TODO: make into yaml config
@@ -19,8 +19,7 @@ $cleaner = MultisertSpec::MrClean.new(database: TEST_DATABASE, connection: $conn
       test_field_int_4 int default null,
       test_field_varchar varchar(10) default null,
       test_field_date DATE default null,
-      test_field_datetime DATETIME default null
-    )]
+      test_field_datetime DATETIME default null)]
 
   mgr.create_table_schemas << %[
     CREATE TABLE IF NOT EXISTS #{mgr.database}.#{TEST_INDEXED_TABLE} (
@@ -56,7 +55,6 @@ describe Multisert do
 
     it "does not fall over when there are no entries" do
       connection.query "DELETE FROM #{TEST_DATABASE}.#{TEST_TABLE}"
-      expect(write_buffer_records.to_a).to eq []
 
       buffer.write_buffer!
 
@@ -65,7 +63,7 @@ describe Multisert do
       expect(buffer.entries).to eq []
     end
 
-    it "multi-inserts all added entries" do
+    it "multi-inserts all added entries and clears #entries" do
       pre_write_buffer_records = connection.query "SELECT * FROM #{TEST_DATABASE}.#{TEST_TABLE}"
       expect(pre_write_buffer_records.to_a).to eq []
 
@@ -96,8 +94,7 @@ describe Multisert do
         {'test_field_int_1' => 1,  'test_field_int_2' => 3,  'test_field_int_3' => 4,  'test_field_int_4' => 5},
         {'test_field_int_1' => 6,  'test_field_int_2' => 7,  'test_field_int_3' => 8,  'test_field_int_4' => 9},
         {'test_field_int_1' => 10, 'test_field_int_2' => 11, 'test_field_int_3' => 12, 'test_field_int_4' => 13},
-        {'test_field_int_1' => 14, 'test_field_int_2' => 15, 'test_field_int_3' => 16, 'test_field_int_4' => 17}
-      ]
+        {'test_field_int_1' => 14, 'test_field_int_2' => 15, 'test_field_int_3' => 16, 'test_field_int_4' => 17}]
 
       expect(buffer.entries).to eq []
     end
@@ -123,8 +120,7 @@ describe Multisert do
         {'test_field_varchar' => 'a'},
         {'test_field_varchar' => 'b'},
         {'test_field_varchar' => 'c'},
-        {'test_field_varchar' => 'd'}
-      ]
+        {'test_field_varchar' => 'd'}]
 
       expect(buffer.entries).to eq []
     end
@@ -153,8 +149,7 @@ describe Multisert do
         {'test_field_date' => Date.parse('2013-01-15')},
         {'test_field_date' => Date.parse('2013-01-16')},
         {'test_field_date' => Date.parse('2013-01-17')},
-        {'test_field_date' => Date.parse('2013-01-18')}
-      ]
+        {'test_field_date' => Date.parse('2013-01-18')}]
 
       expect(buffer.entries).to eq []
     end

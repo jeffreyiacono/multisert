@@ -2,12 +2,13 @@ class Multisert
   MAX_BUFFER_COUNT_DEFAULT = 10_000
   INSERT_OPERATION_DEFAULT = 'INSERT INTO'
 
-  attr_accessor :connection
-  attr_accessor :database
-  attr_accessor :table
-  attr_accessor :fields
-  attr_accessor :insert_strategy
-  attr_writer   :max_buffer_count
+  attr_accessor :connection,
+                :database,
+                :table,
+                :fields,
+                :insert_strategy
+
+  attr_writer :max_buffer_count
 
   def initialize attrs = {}
     attrs.each do |attr, value|
