@@ -1,10 +1,12 @@
 class Multisert
   MAX_BUFFER_COUNT_DEFAULT = 10_000
+  INSERT_OPERATION_DEFAULT = 'INSERT INTO'
 
   attr_accessor :connection
   attr_accessor :database
   attr_accessor :table
   attr_accessor :fields
+  attr_accessor :insert_strategy
   attr_writer   :max_buffer_count
 
   def initialize attrs = {}
@@ -42,6 +44,10 @@ class Multisert
 
 private
 
+  def insert_strategy?
+    !!insert_strategy
+  end
+
   def buffer
     @buffer ||= []
   end
@@ -63,7 +69,7 @@ private
   end
 
   def multisert_preamble
-    "INSERT INTO #{database}.#{table} (#{fields.join(',')}) VALUES"
+    "#{insert_operation} #{database}.#{table} (#{fields.join(',')}) VALUES"
   end
 
   def multisert_values
@@ -71,6 +77,16 @@ private
       memo << "(#{entries.map { |e| cast e }.join(',')})"
       memo
     }.join(",")
+  end
+
+  def insert_operation
+    return INSERT_OPERATION_DEFAULT unless insert_strategy?
+
+    case insert_strategy.to_s.downcase
+    when 'replace' then 'REPLACE INTO'
+    when 'ignore'  then 'INSERT IGNORE'
+    else raise "no operation for \"#{insert_strategy}\" insert strategy"
+    end
   end
 
   def cast value
