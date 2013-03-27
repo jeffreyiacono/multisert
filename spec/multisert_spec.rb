@@ -245,6 +245,7 @@ describe Multisert do
         buffer.insert_strategy = :ignore
 
         buffer << [1, 'NEW']
+        buffer << [3, 'ALSO NEW']
       end
 
       it "does not raise an error" do
@@ -262,7 +263,8 @@ describe Multisert do
 
         expect(post_write_buffer_records.to_a).to eq [
           {'test_id' => 1, 'test_field' => 'ONE'},
-          {'test_id' => 2, 'test_field' => 'TWO'}]
+          {'test_id' => 2, 'test_field' => 'TWO'},
+          {'test_id' => 3, 'test_field' => 'ALSO NEW'}]
       end
     end
 
