@@ -48,7 +48,7 @@ describe Multisert do
     end
 
     it "does not fall over when there are no entries" do
-      write_buffer_records = connection.query "DELETE FROM #{TEST_DATABASE}.#{TEST_TABLE}"
+      connection.query "DELETE FROM #{TEST_DATABASE}.#{TEST_TABLE}"
       expect(write_buffer_records.to_a).to eq []
 
       buffer.write_buffer!
