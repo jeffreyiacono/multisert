@@ -326,9 +326,9 @@ describe Multisert do
       # test that all are written w/o explicitly #write!
       buffer.max_buffer_count = sample_entries.length - 1
 
-      buffer.with_buffering do |buffer|
+      buffer.with_buffering do |b|
         sample_entries.each do |entry|
-          buffer << entry.to_a
+          b << entry.to_a
         end
       end
 

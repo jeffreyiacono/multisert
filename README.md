@@ -53,10 +53,10 @@ buffer = Multisert.new connection: dbclient,
                        table:      'some_table',
                        fields:     ['field_1', 'field_2', 'field_3', 'field_4']
 
-buffer.with_buffering do |buffer|
+buffer.with_buffering do |b|
   (0..1_000_000).each do |i|
     res = some_magical_calculation(i)
-    buffer << res
+    b << res
   end
 end
 ```
