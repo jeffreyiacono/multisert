@@ -43,6 +43,11 @@ class Multisert
     @max_buffer_count || MAX_BUFFER_COUNT_DEFAULT
   end
 
+  def with_buffering &block
+    yield self
+    write_buffer!
+  end
+
 private
 
   def insert_strategy?

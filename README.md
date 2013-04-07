@@ -53,6 +53,23 @@ buffer = Multisert.new connection: dbclient,
                        table:      'some_table',
                        fields:     ['field_1', 'field_2', 'field_3', 'field_4']
 
+buffer.with_buffering do |buffer|
+  (0..1_000_000).each do |i|
+    res = some_magical_calculation(i)
+    buffer << res
+  end
+end
+```
+
+We start by creating a new Multisert instance, providing the database
+connection, database and table, and fields as attributes. Next, we leverage
+`#with_buffering` to wrap our sample iteration. Within the block, we shovel the
+results from `some_magical_calculation` into the Multisert instance, which then
+handles all the heavy lifting in terms of writing to the database.
+
+As an aside, `#with_buffering` is handling the following under the hood:
+
+```ruby
 (0..1_000_000).each do |i|
   res = some_magical_calculation(i)
   buffer << res
@@ -60,16 +77,13 @@ end
 buffer.write!
 ```
 
-We start by creating a new Multisert instance, providing the database
-connection, database and table, and fields as attributes. Next, as we get the
-results from `some_magical_calculation`, we shovel each into the Multisert
-instance. As we iterate through, the Multisert instance will build up the
-records and then write itself to the specified database table when it hits an
-internal count (default is 10_000, but can be set via the `max_buffer_count`
-attribute). One last thing to note is the `buffer.write!` at the end of the
-script. This ensures that any pending entries are written to the database table
-that were not automatically taken care of by the auto-write that will kick in
-during the iteration.
+As we iterate through, the Multisert instance will build up the records and
+then write itself to the specified database table when it hits an internal
+count (default is 10_000 entries, but this can be adjusted via the
+`max_buffer_count` attribute). The `buffer.write!` at the end ensures that
+any pending entries are written to the database table that were not
+automatically taken care of by the auto-write that will kick in during the
+iteration.
 
 ## Insert Strategies
 
