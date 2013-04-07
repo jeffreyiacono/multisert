@@ -38,7 +38,7 @@ def insert_performance_test connection, cleaner, sample_records, destination
   sample_records.each do |record|
     connection.query %[
       INSERT INTO #{destination} (#{fields})
-      VALUES (#{record.map { |k,v| v }.join(', ')})]
+      VALUES (#{record.values.join(', ')})]
   end
   runtime = timer.stop!
   ensure_data_completeness! connection, destination, sample_records.count
@@ -57,10 +57,11 @@ def multinsert_performance_test connection, cleaner, sample_records, destination
   cleaner.ensure_clean_database!
 
   (timer = Timer.new).start!
-  sample_records.each do |record|
-    buffer << record.map { |k, v| v }
+  buffer.with_buffering do |buffer|
+    sample_records.each do |record|
+      buffer << record.values
+    end
   end
-  buffer.flush!
   runtime = timer.stop!
   ensure_data_completeness! connection, destination, sample_records.count
   puts "multisert w/ buffer of #{buffer.max_buffer_count} took #{runtime.round(2)}s to insert #{sample_records.count} entries"

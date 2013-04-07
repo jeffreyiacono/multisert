@@ -294,4 +294,59 @@ describe Multisert do
       end
     end
   end
+
+  describe "#with_buffering" do
+    let(:connection) { $connection }
+    let(:buffer) { described_class.new }
+
+    before do
+      $cleaner.ensure_clean_database! teardown_tables: (!!ENV['TEARDOWN'] || false)
+    end
+
+    it "ensures all records are inserted" do
+      pre_write_buffer_records = connection.query "SELECT * FROM #{test_table}"
+      expect(pre_write_buffer_records.to_a).to eq []
+
+      buffer.connection = connection
+      buffer.database   = TEST_DATABASE
+      buffer.table      = TEST_TABLE
+      buffer.fields     = ['test_field_int_1',
+                           'test_field_int_2',
+                           'test_field_int_3',
+                           'test_field_int_4']
+
+
+
+      sample_entries = [[ 1,  3,  4,  5],
+                        [ 6,  7,  8,  9],
+                        [10, 11, 12, 13],
+                        [14, 15, 16, 17]]
+
+      # set this to 1 less than the total number of entries we want to buffer.
+      # test that all are written w/o explicitly #write!
+      buffer.max_buffer_count = sample_entries.length - 1
+
+      buffer.with_buffering do |buffer|
+        sample_entries.each do |entry|
+          buffer << entry.to_a
+        end
+      end
+
+      post_write_buffer_records = connection.query %[
+        SELECT
+            test_field_int_1
+          , test_field_int_2
+          , test_field_int_3
+          , test_field_int_4
+        FROM #{test_table}]
+
+      expect(post_write_buffer_records.to_a).to eq [
+        {'test_field_int_1' => 1,  'test_field_int_2' => 3,  'test_field_int_3' => 4,  'test_field_int_4' => 5},
+        {'test_field_int_1' => 6,  'test_field_int_2' => 7,  'test_field_int_3' => 8,  'test_field_int_4' => 9},
+        {'test_field_int_1' => 10, 'test_field_int_2' => 11, 'test_field_int_3' => 12, 'test_field_int_4' => 13},
+        {'test_field_int_1' => 14, 'test_field_int_2' => 15, 'test_field_int_3' => 16, 'test_field_int_4' => 17}]
+
+      expect(buffer.entries).to eq []
+    end
+  end
 end
